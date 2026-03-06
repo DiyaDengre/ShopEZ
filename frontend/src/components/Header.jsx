@@ -2,7 +2,7 @@ import { useGetTopProductsQuery } from "../redux/api/productApiSlice";
 import Loader from "./Loader";
 import SmallProduct from "../pages/Products/SmallProduct";
 import ProductCarousel from "../pages/Products/ProductCarousel";
-import "@fontsource/poppins";
+
 const Header = () => {
   const { data, isLoading, error } = useGetTopProductsQuery();
 

@@ -6,8 +6,8 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      "/api/": "https://shopez-backend-hvtz.onrender.com",
-      "/uploads/": "https://shopez-backend-hvtz.onrender.com",
+      "/api/": "https://shopez-backend-fzaa.onrender.com",
+      "/uploads/": "https://shopez-backend-fzaa.onrender.com",
     },
   },
 });

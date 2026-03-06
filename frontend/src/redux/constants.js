@@ -1,4 +1,4 @@
-export const BASE_URL = "https://shopez-backend-hvtz.onrender.com";
+export const BASE_URL = "https://shopez-backend-fzaa.onrender.com";
 export const USERS_URL = "/api/users";
 export const CATEGORY_URL = "/api/category";
 export const PRODUCT_URL = "/api/products";

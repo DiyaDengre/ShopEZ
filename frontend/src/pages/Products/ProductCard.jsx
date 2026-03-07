@@ -16,20 +16,24 @@ const ProductCard = ({ p }) => {
     });
   };
 
-  const imageUrl = `https://shopez-backend-fzaa.onrender.com${p.image}`;
+  const productId = p?._id || p?.id;
+
+  const imageUrl = p?.image
+    ? `https://shopez-backend-fzaa.onrender.com${p.image}`
+    : "/placeholder.png";
 
   return (
     <div className="max-w-sm relative bg-[#1A1A1A] rounded-lg shadow">
       <section className="relative">
-        <Link to={`/product/${p.id}`}>
+        <Link to={`/product/${productId}`}>
           <span className="absolute bottom-3 right-3 bg-pink-100 text-pink-800 text-sm font-medium px-2.5 py-0.5 rounded-full">
-            {p.brand}
+            {p?.brand}
           </span>
 
           <img
             className="cursor-pointer w-full hover:brightness-75 hover:scale-105 transition duration-300"
             src={imageUrl}
-            alt={p.name}
+            alt={p?.name}
             style={{ height: "170px", objectFit: "cover" }}
           />
         </Link>
@@ -39,20 +43,18 @@ const ProductCard = ({ p }) => {
 
       <div className="p-5">
         <div className="flex justify-between">
-          <h5 className="mb-2 text-xl text-white">{p.name}</h5>
+          <h5 className="mb-2 text-xl text-white">{p?.name}</h5>
 
-          <p className="font-semibold text-pink-500">
-            ₹ {p.price}
-          </p>
+          <p className="font-semibold text-pink-500">₹ {p?.price}</p>
         </div>
 
         <p className="mb-3 font-normal text-[#CFCFCF]">
-          {p.description.substring(0, 60)}...
+          {p?.description?.substring(0, 60)}...
         </p>
 
         <section className="flex justify-between items-center">
           <Link
-            to={`/product/${p.id}`}
+            to={`/product/${productId}`}
             className="px-3 py-2 text-sm text-white bg-pink-700 rounded-lg hover:bg-pink-800"
           >
             Read More

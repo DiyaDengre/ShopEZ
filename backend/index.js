@@ -2,6 +2,7 @@ import path from "path";
 import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
+import cors from "cors";  // ✅ import at top with others
 
 import connectDB from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
@@ -16,6 +17,16 @@ const port = process.env.PORT || 5000;
 connectDB();
 
 const app = express();
+
+// ✅ CORS must be FIRST before all other middleware
+app.use(
+  cors({
+    origin: "https://shopez-jdqv.onrender.com",
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

@@ -1,30 +1,22 @@
-import path from "path";
 import express from "express";
 import multer from "multer";
+import ImageKit from "imagekit";
 
 const router = express.Router();
 
-const __dirname = path.resolve();
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, "backend", "uploads"));
-  },
-
-  filename: (req, file, cb) => {
-    const extname = path.extname(file.originalname);
-    cb(null, `image-${Date.now()}${extname}`);
-  },
+// ImageKit config
+const imagekit = new ImageKit({
+  publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
+  privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
+  urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT,
 });
 
+// Use memory storage instead of disk
+const storage = multer.memoryStorage();
+
 const fileFilter = (req, file, cb) => {
-  const filetypes = /jpg|jpeg|png|webp/;
   const mimetypes = /image\/jpg|image\/jpeg|image\/png|image\/webp/;
-
-  const extname = path.extname(file.originalname).toLowerCase();
-  const mimetype = file.mimetype;
-
-  if (filetypes.test(extname) && mimetypes.test(mimetype)) {
+  if (mimetypes.test(file.mimetype)) {
     cb(null, true);
   } else {
     cb(new Error("Images only"));
@@ -33,14 +25,27 @@ const fileFilter = (req, file, cb) => {
 
 const upload = multer({ storage, fileFilter });
 
-router.post("/", upload.single("image"), (req, res) => {
-  if (req.file) {
-    res.status(200).send({
-      message: "Image uploaded successfully",
-      image: `/uploads/${req.file.filename}`,
+router.post("/", upload.single("image"), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).send({ message: "No image file provided" });
+    }
+
+    // Upload to ImageKit
+    const result = await imagekit.upload({
+      file: req.file.buffer,           // file buffer from multer memory storage
+      fileName: `product-${Date.now()}`,
+      folder: "/products",             // folder in ImageKit
     });
-  } else {
-    res.status(400).send({ message: "No image file provided" });
+
+    res.status(200).json({
+      message: "Image uploaded successfully",
+      image: result.url,               // ImageKit URL returned to frontend
+    });
+
+  } catch (error) {
+    console.error("ImageKit upload error:", error);
+    res.status(500).json({ message: "Image upload failed" });
   }
 });
 
